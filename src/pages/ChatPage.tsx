@@ -196,48 +196,52 @@ const ChatPage = () => {
               <div ref={scrollRef} />
             </div>
 
-            {/* Input bar */}
-            <div className="p-3 border-t border-border/50 bg-card/70 backdrop-blur-sm">
-              <div className="flex items-center gap-2 max-w-2xl mx-auto">
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleVoice}
-                  className={isListening ? "text-destructive" : "text-muted-foreground"}
-                >
-                  {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
-                </Button>
-                <input
-                  value={input}
-                  onChange={(e) => {
-                    setInput(e.target.value);
-                    resetActivity();
-                  }}
-                  onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send(input)}
-                  placeholder="What's on your mind..."
-                  className="flex-1 bg-secondary/60 border border-border px-4 py-2.5 font-retro text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
-                  disabled={isLoading || isPaused}
-                />
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => send(input)}
-                  disabled={!input.trim() || isLoading || isPaused}
-                  className="text-primary"
-                >
-                  <Send className="w-5 h-5" />
-                </Button>
+            {/* Input bar - only show after intake form is completed */}
+            {messages.length > 0 && (
+              <div className="p-3 border-t border-border/50 bg-card/70 backdrop-blur-sm">
+                <div className="flex items-center gap-2 max-w-2xl mx-auto">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleVoice}
+                    className={isListening ? "text-destructive" : "text-muted-foreground"}
+                  >
+                    {isListening ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+                  </Button>
+                  <input
+                    value={input}
+                    onChange={(e) => {
+                      setInput(e.target.value);
+                      resetActivity();
+                    }}
+                    onKeyDown={(e) => e.key === "Enter" && !e.shiftKey && send(input)}
+                    placeholder="What's on your mind..."
+                    className="flex-1 bg-secondary/60 border border-border px-4 py-2.5 font-retro text-lg text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                    disabled={isLoading || isPaused}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => send(input)}
+                    disabled={!input.trim() || isLoading || isPaused}
+                    className="text-primary"
+                  >
+                    <Send className="w-5 h-5" />
+                  </Button>
+                </div>
               </div>
-            </div>
+            )}
 
-            {/* User Checks */}
-            <UserChecks
-              dontRepeat={dontRepeat}
-              isPaused={isPaused}
-              onDontRepeat={() => setDontRepeat((prev) => !prev)}
-              onRedirect={handleRedirect}
-              onPauseToggle={() => setIsPaused((prev) => !prev)}
-            />
+            {/* User Checks - only show after intake form is completed */}
+            {messages.length > 0 && (
+              <UserChecks
+                dontRepeat={dontRepeat}
+                isPaused={isPaused}
+                onDontRepeat={() => setDontRepeat((prev) => !prev)}
+                onRedirect={handleRedirect}
+                onPauseToggle={() => setIsPaused((prev) => !prev)}
+              />
+            )}
           </>
         )}
 
@@ -260,12 +264,14 @@ const ChatPage = () => {
           />
         )}
 
-        {/* Tab Navigation */}
-        <TabNavigation
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          personaColorClass={persona.colorClass}
-        />
+        {/* Tab Navigation - only show after intake form is completed */}
+        {messages.length > 0 && (
+          <TabNavigation
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            personaColorClass={persona.colorClass}
+          />
+        )}
       </div>
     </div>
   );

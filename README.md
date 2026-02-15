@@ -8,7 +8,7 @@ Mind Mirror uses conversational AI to guide writers through their creative block
 
 ## Features
 
-- **Three AI Personas**: Sage (reflective), Rational Employee (direct), and Detective (curious)
+- **Three AI Personas**: Sage (reflective), The Manager (direct), and Detective (curious)
 - **Structured Intake**: Provide context about your writing project before starting
 - **Adaptive Questioning**: AI progresses from general to deeper ideas based on your conversation
 - **Voice Input**: Use speech-to-text for natural conversation

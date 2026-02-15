@@ -4,9 +4,6 @@ import {
   Node,
   Edge,
   Background,
-  Controls,
-  useNodesState,
-  useEdgesState,
 } from "@xyflow/react";
 import "@xyflow/react/dist/style.css";
 import dagre from "dagre";
@@ -46,19 +43,26 @@ function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
 }
 
 const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([]);
-  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [nodes, setNodes] = useState<Node[]>([]);
+  const [edges, setEdges] = useState<Edge[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [generated, setGenerated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleGenerate = useCallback(async () => {
     if (messages.length < 2) {
       toast.error("Have a conversation first before generating a mind map.");
       return;
     }
+
+    console.log("Starting mind map generation...");
     setIsLoading(true);
+    setError(null); // Clear any previous errors
+
     try {
+      console.log("Calling generateMindMapData with", messages.length, "messages");
       const data = await generateMindMapData(messages);
+      console.log("Mind map data received:", data);
 
       const flowNodes: Node[] = [];
       const flowEdges: Edge[] = [];
@@ -136,26 +140,36 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
     } catch (err) {
       console.error("Mind map generation error:", err);
       const errorMsg = err instanceof Error ? err.message : "Unknown error";
-      toast.error(`Failed to generate mind map: ${errorMsg}`);
+      setError(errorMsg);
+      toast.error(`Failed to generate mind map: ${errorMsg}`, {
+        duration: 5000, // Show error toast for 5 seconds
+      });
     } finally {
       setIsLoading(false);
+      console.log("Mind map generation finished, isLoading set to false");
     }
-  }, [messages, personaColor, setNodes, setEdges]);
+  }, [messages, personaColor]);
 
   if (!generated) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-4">
-        <div className="pixel-border bg-card/80 backdrop-blur-sm px-8 py-6 text-center">
+        <div className="pixel-border bg-card/80 backdrop-blur-sm px-8 py-6 text-center max-w-md">
           <h2 className="font-pixel text-xs text-primary mb-3">Mind Map</h2>
           <p className="font-retro text-lg text-muted-foreground mb-4">
             Visualize the themes and insights from your conversation.
           </p>
+          {error && (
+            <div className="mb-4 p-3 bg-red-900/20 border-2 border-red-700 text-red-400 font-retro text-sm">
+              <p className="font-semibold mb-1">Error:</p>
+              <p>{error}</p>
+            </div>
+          )}
           <Button
             onClick={handleGenerate}
             disabled={isLoading || messages.length < 2}
             className="font-retro text-lg px-6"
           >
-            {isLoading ? "Generating..." : "Generate Mind Map"}
+            {isLoading ? "Generating..." : error ? "Try Again" : "Generate Mind Map"}
           </Button>
         </div>
       </div>
@@ -167,13 +181,15 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
       <ReactFlow
         nodes={nodes}
         edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
+        nodesDraggable={false}
+        nodesConnectable={false}
+        elementsSelectable={false}
+        panOnDrag={true}
+        zoomOnScroll={true}
         fitView
         proOptions={{ hideAttribution: true }}
       >
         <Background color="hsl(25, 25%, 35%, 0.1)" gap={16} />
-        <Controls />
       </ReactFlow>
     </div>
   );

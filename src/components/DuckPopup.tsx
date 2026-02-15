@@ -44,15 +44,11 @@ const DuckPopup = ({ quote, visible, onDismiss }: DuckPopupProps) => {
         </div>
 
         {/* Large duck */}
-        <div className="relative w-32 h-32 rounded-full overflow-hidden bg-gradient-to-br from-yellow-400/20 to-orange-400/20">
+        <div className="relative">
           <img
             src={duckMascot}
             alt="Captain Quack"
-            className="w-full h-full object-cover scale-110"
-            style={{
-              imageRendering: "pixelated",
-              mixBlendMode: "multiply"
-            }}
+            className="w-32 h-32 object-contain drop-shadow-lg animate-float"
           />
         </div>
       </div>

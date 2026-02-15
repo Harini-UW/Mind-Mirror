@@ -349,23 +349,30 @@ Respond with ONLY the JSON object, nothing else.`;
         messages: messages.map((m) => ({ role: m.role, content: m.content })),
       };
 
+  console.log("Mind map generation: Calling API...");
   const resp = await fetch(config.API_URL, {
     method: "POST",
     headers,
     body: JSON.stringify(requestBody),
   });
 
+  console.log("Mind map generation: API responded with status", resp.status);
+
   if (!resp.ok) {
     const errorText = await resp.text();
+    console.error("Mind map API error:", resp.status, errorText);
     throw new Error(`API error (${resp.status}): ${errorText}`);
   }
 
   const data = await resp.json();
+  console.log("Mind map generation: Parsed API response", data);
 
   // Extract response based on provider
   const responseText = config.IS_OPENROUTER
     ? data.choices?.[0]?.message?.content
     : data.content?.[0]?.text;
+
+  console.log("Mind map generation: Extracted response text:", responseText?.substring(0, 200) + "...");
 
   if (!responseText) {
     console.error("Mind map API response:", data);
@@ -378,29 +385,37 @@ Respond with ONLY the JSON object, nothing else.`;
   // Remove markdown code block if present
   const codeBlockMatch = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/);
   if (codeBlockMatch) {
+    console.log("Mind map generation: Found markdown code block, extracting...");
     jsonText = codeBlockMatch[1].trim();
   }
 
   // Remove any leading/trailing non-JSON text
   const jsonMatch = jsonText.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
+    console.log("Mind map generation: Extracting JSON object from text...");
     jsonText = jsonMatch[0];
   }
+
+  console.log("Mind map generation: Final JSON text to parse:", jsonText.substring(0, 200) + "...");
 
   // Try to parse JSON
   try {
     const parsed = JSON.parse(jsonText);
+    console.log("Mind map generation: Successfully parsed JSON");
 
     // Validate structure
     if (!parsed.rootNode || !parsed.branches || !Array.isArray(parsed.branches)) {
-      throw new Error("Invalid mind map structure");
+      console.error("Mind map generation: Invalid structure:", parsed);
+      throw new Error("Invalid mind map structure: missing rootNode or branches");
     }
 
+    console.log("Mind map generation: Structure validated, returning data");
     return parsed;
   } catch (parseError) {
-    console.error("Failed to parse mind map JSON:", responseText);
+    console.error("Mind map generation: Failed to parse JSON");
+    console.error("Response text:", responseText);
     console.error("Extracted JSON:", jsonText);
     console.error("Parse error:", parseError);
-    throw new Error("AI returned invalid JSON format. Please try again.");
+    throw new Error(`AI returned invalid JSON format: ${parseError instanceof Error ? parseError.message : 'Unknown error'}`);
   }
 }

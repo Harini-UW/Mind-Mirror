@@ -28,18 +28,18 @@ Last Written: ${lastWritten.trim()}`;
   const allFieldsFilled = textType.trim() && topicGenre.trim() && progress.trim() && lastWritten.trim();
 
   return (
-    <div className="flex flex-col items-center mb-8 mt-4">
-      <div className="bg-white/40 backdrop-blur-sm px-8 py-6 pixel-border max-w-lg w-full">
-        <h2 className="font-pixel text-sm mb-4 text-center" style={{ color: personaColor }}>
+    <div className="flex flex-col items-center mb-4 mt-2">
+      <div className="bg-white/40 backdrop-blur-sm px-8 py-5 pixel-border max-w-xl w-full">
+        <h2 className="font-pixel text-xl mb-3 text-center" style={{ color: personaColor }}>
           Let's get started
         </h2>
-        <p className="font-retro text-base text-foreground/70 mb-6 text-center">
+        <p className="font-retro text-xl text-gray-700 mb-5 text-center">
           Tell me about your writing project
         </p>
 
-        <div className="space-y-4">
+        <div className="space-y-3">
           <div>
-            <label className="font-retro text-sm text-foreground/80 block mb-1">
+            <label className="font-retro text-lg text-gray-700 block mb-1">
               What type of text are you working on?
             </label>
             <input
@@ -47,12 +47,12 @@ Last Written: ${lastWritten.trim()}`;
               value={textType}
               onChange={(e) => setTextType(e.target.value)}
               placeholder="[novel, essay, screenplay, blog post]"
-              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-xl text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="font-retro text-sm text-foreground/80 block mb-1">
+            <label className="font-retro text-lg text-gray-700 block mb-1">
               What topic/genre are you working on?
             </label>
             <input
@@ -60,12 +60,12 @@ Last Written: ${lastWritten.trim()}`;
               value={topicGenre}
               onChange={(e) => setTopicGenre(e.target.value)}
               placeholder="[sci-fi, romance, technical documentation]"
-              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-xl text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="font-retro text-sm text-foreground/80 block mb-1">
+            <label className="font-retro text-lg text-gray-700 block mb-1">
               How much have you written so far?
             </label>
             <input
@@ -73,12 +73,12 @@ Last Written: ${lastWritten.trim()}`;
               value={progress}
               onChange={(e) => setProgress(e.target.value)}
               placeholder="[5 pages, 3 chapters, outline only]"
-              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-xl text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
 
           <div>
-            <label className="font-retro text-sm text-foreground/80 block mb-1">
+            <label className="font-retro text-lg text-gray-700 block mb-1">
               How long has it been since you last wrote something?
             </label>
             <input
@@ -86,7 +86,7 @@ Last Written: ${lastWritten.trim()}`;
               value={lastWritten}
               onChange={(e) => setLastWritten(e.target.value)}
               placeholder="[2 weeks, 3 months, yesterday]"
-              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-base text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+              className="w-full bg-secondary/60 border border-border px-3 py-2 font-retro text-xl text-gray-800 placeholder:text-gray-600 focus:outline-none focus:ring-1 focus:ring-primary"
             />
           </div>
         </div>
@@ -94,7 +94,7 @@ Last Written: ${lastWritten.trim()}`;
         <Button
           onClick={handleSubmit}
           disabled={!allFieldsFilled}
-          className="w-full mt-6 font-retro text-lg"
+          className="w-full mt-5 font-retro text-2xl py-3"
         >
           Start Conversation
         </Button>
