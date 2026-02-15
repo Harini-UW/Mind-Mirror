@@ -1,12 +1,16 @@
+// bring in x button icon
 import { X } from "lucide-react";
+// bring in duck picture
 import duckMascot from "@/assets/duck-mascot.png";
 
+// what this banner needs to work
 interface DuckBannerProps {
-  quote: string;
-  visible: boolean;
-  onDismiss: () => void;
+  quote: string;         // message to show
+  visible: boolean;      // if should show
+  onDismiss: () => void; // what to do on close
 }
 
+// thin banner at top with duck
 const DuckBanner = ({ quote, visible, onDismiss }: DuckBannerProps) => {
   return (
     <div

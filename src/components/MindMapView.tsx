@@ -1,38 +1,54 @@
+// bring in state tracking tools
 import { useState, useCallback } from "react";
+// bring in mind map display tools
 import {
   ReactFlow,
   Node,
   Edge,
   Background,
 } from "@xyflow/react";
+// bring in mind map styles
 import "@xyflow/react/dist/style.css";
+// bring in layout arranging tool
 import dagre from "dagre";
+// bring in button component
 import { Button } from "@/components/ui/button";
+// bring in ai mind map maker
 import { Msg, generateMindMapData } from "@/lib/streamChat";
+// bring in popup message tool
 import { toast } from "sonner";
 
+// what this view needs to work
 interface MindMapViewProps {
-  messages: Msg[];
-  personaColor: string;
+  messages: Msg[];       // all chat messages
+  personaColor: string;  // color for boxes
 }
 
+// how big each box should be
 const nodeWidth = 180;
 const nodeHeight = 60;
 
+// arrange boxes in tree shape
 function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
+  // make new layout calculator
   const g = new dagre.graphlib.Graph();
   g.setDefaultEdgeLabel(() => ({}));
+  // arrange top to bottom with spacing
   g.setGraph({ rankdir: "TB", nodesep: 40, ranksep: 80 });
 
+  // tell calculator about each box
   nodes.forEach((node) => {
     g.setNode(node.id, { width: nodeWidth, height: nodeHeight });
   });
+  // tell calculator about connections
   edges.forEach((edge) => {
     g.setEdge(edge.source, edge.target);
   });
 
+  // calculate positions
   dagre.layout(g);
 
+  // put boxes in calculated spots
   return nodes.map((node) => {
     const pos = g.node(node.id);
     return {
@@ -42,32 +58,44 @@ function layoutNodes(nodes: Node[], edges: Edge[]): Node[] {
   });
 }
 
+// page showing mind map diagram
 const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
+  // remember all boxes
   const [nodes, setNodes] = useState<Node[]>([]);
+  // remember all connections
   const [edges, setEdges] = useState<Edge[]>([]);
+  // remember if ai is thinking
   const [isLoading, setIsLoading] = useState(false);
+  // remember if map is created
   const [generated, setGenerated] = useState(false);
+  // remember if error happened
   const [error, setError] = useState<string | null>(null);
 
+  // make mind map from chat messages
   const handleGenerate = useCallback(async () => {
+    // stop if not enough messages
     if (messages.length < 2) {
       toast.error("Have a conversation first before generating a mind map.");
       return;
     }
 
     console.log("Starting mind map generation...");
+    // show thinking state
     setIsLoading(true);
-    setError(null); // Clear any previous errors
+    // clear old errors
+    setError(null);
 
     try {
       console.log("Calling generateMindMapData with", messages.length, "messages");
+      // ask ai to make map data
       const data = await generateMindMapData(messages);
       console.log("Mind map data received:", data);
 
+      // prepare box and line lists
       const flowNodes: Node[] = [];
       const flowEdges: Edge[] = [];
 
-      // Root node
+      // make center box at top
       flowNodes.push({
         id: data.rootNode.id,
         data: { label: data.rootNode.label },
@@ -84,8 +112,9 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
         },
       });
 
-      // Branches and leaves
+      // make boxes for main topics
       data.branches.forEach((branch) => {
+        // add topic box in character color
         flowNodes.push({
           id: branch.id,
           data: { label: branch.label },
@@ -101,6 +130,7 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
             borderRadius: "0px",
           },
         });
+        // connect topic to center box
         flowEdges.push({
           id: `e-${branch.parentId}-${branch.id}`,
           source: branch.parentId,
@@ -108,7 +138,9 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
           style: { stroke: "hsl(25, 25%, 35%)", strokeWidth: 2 },
         });
 
+        // make boxes for details
         branch.children?.forEach((child) => {
+          // add detail box in light color
           flowNodes.push({
             id: child.id,
             data: { label: child.label },
@@ -124,6 +156,7 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
               borderRadius: "0px",
             },
           });
+          // connect detail to topic box
           flowEdges.push({
             id: `e-${child.parentId}-${child.id}`,
             source: child.parentId,
@@ -133,23 +166,31 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
         });
       });
 
+      // arrange boxes in tree shape
       const laidOut = layoutNodes(flowNodes, flowEdges);
+      // save all boxes
       setNodes(laidOut);
+      // save all connections
       setEdges(flowEdges);
+      // mark as complete
       setGenerated(true);
     } catch (err) {
       console.error("Mind map generation error:", err);
+      // save error message
       const errorMsg = err instanceof Error ? err.message : "Unknown error";
       setError(errorMsg);
+      // show error to user
       toast.error(`Failed to generate mind map: ${errorMsg}`, {
-        duration: 5000, // Show error toast for 5 seconds
+        duration: 5000,
       });
     } finally {
+      // hide thinking state
       setIsLoading(false);
       console.log("Mind map generation finished, isLoading set to false");
     }
   }, [messages, personaColor]);
 
+  // show button if not generated yet
   if (!generated) {
     return (
       <div className="flex-1 flex flex-col items-center justify-center px-4">
@@ -158,6 +199,7 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
           <p className="font-retro text-lg text-muted-foreground mb-4">
             Visualize the themes and insights from your conversation.
           </p>
+          {/* show error box if failed */}
           {error && (
             <div className="mb-4 p-3 bg-red-900/20 border-2 border-red-700 text-red-400 font-retro text-sm">
               <p className="font-semibold mb-1">Error:</p>
@@ -176,6 +218,7 @@ const MindMapView = ({ messages, personaColor }: MindMapViewProps) => {
     );
   }
 
+  // show mind map diagram
   return (
     <div className="flex-1 relative">
       <ReactFlow

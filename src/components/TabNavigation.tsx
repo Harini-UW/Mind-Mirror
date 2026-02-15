@@ -1,22 +1,28 @@
+// bring in tab icons
 import { MessageSquare, Map, FileText } from "lucide-react";
 
+// three types of tabs available
 export type ActiveTab = "chat" | "mindmap" | "summary";
 
+// what this navigation bar needs
 interface TabNavigationProps {
-  activeTab: ActiveTab;
-  onTabChange: (tab: ActiveTab) => void;
-  personaColorClass: string;
+  activeTab: ActiveTab;           // which tab is showing
+  onTabChange: (tab: ActiveTab) => void; // change tab function
+  personaColorClass: string;      // color for active tab
 }
 
+// list of all three tabs
 const tabs: { id: ActiveTab; label: string; icon: typeof MessageSquare }[] = [
   { id: "chat", label: "Chat", icon: MessageSquare },
   { id: "mindmap", label: "Mind Map", icon: Map },
   { id: "summary", label: "Summary", icon: FileText },
 ];
 
+// bottom bar with three tabs
 const TabNavigation = ({ activeTab, onTabChange, personaColorClass }: TabNavigationProps) => {
   return (
     <div className="flex border-t border-border/50 bg-card/70 backdrop-blur-sm">
+      {/* show all three tabs */}
       {tabs.map((tab) => {
         const Icon = tab.icon;
         const isActive = activeTab === tab.id;

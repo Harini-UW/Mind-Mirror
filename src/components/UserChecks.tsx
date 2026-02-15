@@ -1,13 +1,16 @@
+// bring in button icons
 import { Ban, Shuffle, Pause, Play } from "lucide-react";
 
+// what this control bar needs
 interface UserChecksProps {
-  dontRepeat: boolean;
-  isPaused: boolean;
-  onDontRepeat: () => void;
-  onRedirect: () => void;
-  onPauseToggle: () => void;
+  dontRepeat: boolean;      // if repeat mode is on
+  isPaused: boolean;        // if chat is paused
+  onDontRepeat: () => void; // toggle repeat mode
+  onRedirect: () => void;   // change ai direction
+  onPauseToggle: () => void; // toggle pause
 }
 
+// three control buttons below chat
 const UserChecks = ({
   dontRepeat,
   isPaused,
@@ -17,6 +20,7 @@ const UserChecks = ({
 }: UserChecksProps) => {
   return (
     <div className="flex items-center justify-center gap-3 px-3 py-2 border-t border-border/50 bg-card/70 backdrop-blur-sm">
+      {/* button to stop ai repeating */}
       <button
         onClick={onDontRepeat}
         className={`flex items-center gap-1.5 px-3 py-1.5 font-retro text-sm border-2 border-border transition-all active:translate-y-0.5 ${
@@ -29,6 +33,7 @@ const UserChecks = ({
         Don't Repeat
       </button>
 
+      {/* button to change ai topic */}
       <button
         onClick={onRedirect}
         className="flex items-center gap-1.5 px-3 py-1.5 font-retro text-sm border-2 border-border bg-card text-muted-foreground hover:text-foreground transition-all active:translate-y-0.5 active:bg-accent/20"
@@ -37,6 +42,7 @@ const UserChecks = ({
         Redirect
       </button>
 
+      {/* button to pause and resume */}
       <button
         onClick={onPauseToggle}
         className={`flex items-center gap-1.5 px-3 py-1.5 font-retro text-sm border-2 border-border transition-all active:translate-y-0.5 ${

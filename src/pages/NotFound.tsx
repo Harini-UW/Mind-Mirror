@@ -1,10 +1,16 @@
+// bring in url reading tool
 import { useLocation } from "react-router-dom";
+// bring in effect tool
 import { useEffect } from "react";
 
+// error page for wrong addresses
 const NotFound = () => {
+  // get current web address
   const location = useLocation();
 
+  // run once when page loads
   useEffect(() => {
+    // write error to browser console
     console.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 

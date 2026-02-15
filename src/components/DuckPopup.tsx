@@ -1,12 +1,16 @@
+// bring in duck picture
 import duckMascot from "@/assets/duck-mascot.png";
 
+// what this popup needs to work
 interface DuckPopupProps {
-  quote: string;
-  visible: boolean;
-  onDismiss: () => void;
+  quote: string;       // message to show
+  visible: boolean;    // if should show
+  onDismiss: () => void; // what to do when clicked
 }
 
+// duck motivation popup that appears sometimes
 const DuckPopup = ({ quote, visible, onDismiss }: DuckPopupProps) => {
+  // dont show anything if not visible
   if (!visible) return null;
 
   return (
@@ -14,17 +18,17 @@ const DuckPopup = ({ quote, visible, onDismiss }: DuckPopupProps) => {
       className="fixed inset-0 z-50 flex items-center justify-center"
       onClick={onDismiss}
     >
-      {/* Dimmed backdrop */}
+      {/* dark background behind popup */}
       <div className="absolute inset-0 bg-black/30" />
 
-      {/* Duck + speech bubble */}
+      {/* duck with speech bubble */}
       <div className="relative flex flex-col items-center animate-in fade-in zoom-in duration-300">
-        {/* Speech bubble */}
+        {/* white bubble with message */}
         <div className="relative bg-card pixel-border px-6 py-4 mb-3 max-w-xs text-center">
           <p className="font-retro text-xl text-foreground leading-snug">
             {quote}
           </p>
-          {/* Speech bubble tail */}
+          {/* triangle pointing down to duck */}
           <div
             className="absolute -bottom-3 left-1/2 -translate-x-1/2 w-0 h-0"
             style={{
@@ -43,7 +47,7 @@ const DuckPopup = ({ quote, visible, onDismiss }: DuckPopupProps) => {
           />
         </div>
 
-        {/* Large duck */}
+        {/* big duck picture */}
         <div className="relative">
           <img
             src={duckMascot}

@@ -1,13 +1,17 @@
+// bring in character list
 import { personaList, PersonaId } from "@/lib/personas";
 
+// what this tab bar needs
 interface PersonaTabsProps {
-  activeId: PersonaId;
-  onSwitch: (id: PersonaId) => void;
+  activeId: PersonaId;              // which character is selected
+  onSwitch: (id: PersonaId) => void; // change character function
 }
 
+// top bar to switch characters
 const PersonaTabs = ({ activeId, onSwitch }: PersonaTabsProps) => {
   return (
     <div className="flex border-b border-border/50 bg-card/50 backdrop-blur-sm">
+      {/* show button for each character */}
       {personaList.map((persona) => (
         <button
           key={persona.id}
