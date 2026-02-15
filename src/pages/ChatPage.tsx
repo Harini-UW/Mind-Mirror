@@ -102,20 +102,9 @@ const ChatPage = () => {
   };
 
   const handleRedirect = () => {
-    // Show confirmation
-    const confirmed = window.confirm(
-      "Redirect will clear the conversation history and start fresh from a new angle. Continue?"
-    );
-    if (!confirmed) return;
-
-    // Keep only the intake message (first user message)
-    const intakeMessage = messages[0];
-    setMessages([intakeMessage]);
-
-    // Add system instruction for new angle
+    // Just set the flag - conversation continues with new angle
     setRedirectNext(true);
-
-    toast.success("Starting from a new angle. Ask me something different about your writing.");
+    toast.success("Next response will explore a different angle.");
   };
 
   const handleNewSession = () => {
