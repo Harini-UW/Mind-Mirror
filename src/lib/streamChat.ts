@@ -1,49 +1,65 @@
+// bring in ai settings
 import config from "@/config";
+// bring in character definitions
 import { personas, PersonaId } from "@/lib/personas";
 
+// what a message looks like
 export type Msg = { role: "user" | "assistant"; content: string };
 
+// decide how hard questions should be
 function getDifficultyLevel(exchangeCount: number): string {
+  // first five messages get easy questions
   if (exchangeCount <= 5) {
     return "GENERAL IDEAS — Ask broad questions about purpose, audience, structure, and core content";
   }
+  // after five get harder questions
   return "DEEPER IDEAS — Ask specific questions about details, connections, gaps, and refinements";
 }
 
+// make list of topics already asked
 function extractTopics(messages: Msg[]): string[] {
   return messages
+    // only look at ai messages
     .filter((m) => m.role === "assistant")
     .map((m, idx) => {
-      // Extract the main topic from each question
+      // grab first part of each question
       const question = m.content;
-      // Simple heuristic: get the key phrase (nouns/topics mentioned)
+      // save it as a note
       return `- Question ${idx + 1}: Asked about "${question.slice(0, 60)}..."`;
     });
 }
 
+// build instructions for ai brain
 function buildSystemPrompt(
   personaId: string,
   messages: Msg[],
   flags?: { dontRepeat?: boolean; redirect?: boolean }
 ): string {
+  // get chosen character
   const persona = personas[personaId as PersonaId];
   if (!persona) return "";
 
+  // start with character's base instructions
   let systemPrompt = persona.systemPrompt;
 
+  // add list of topics already covered
   const coveredTopics = extractTopics(messages);
   if (coveredTopics.length > 0) {
     systemPrompt += `\n\nANGLES ALREADY EXPLORED (DO NOT REVISIT):\n${coveredTopics.join("\n")}`;
   }
 
+  // count how many messages sent
   const exchangeCount = messages.filter((m) => m.role === "user").length;
+  // decide difficulty based on count
   const difficulty = getDifficultyLevel(exchangeCount);
   systemPrompt += `\n\nCURRENT DIFFICULTY LEVEL: ${difficulty}. Adjust your questioning depth accordingly.`;
 
+  // if user says too repetitive
   if (flags?.dontRepeat) {
     systemPrompt += `\n\nURGENT: The user has flagged that your questions feel repetitive. Review the conversation carefully and ensure your next question explores a COMPLETELY NEW angle that has not been touched at all. Acknowledge briefly that you're shifting direction.`;
   }
 
+  // if user wants different direction
   if (flags?.redirect) {
     systemPrompt += `\n\nThe user wants you to change your line of questioning. Shift to a meaningfully different angle or dimension of their writer's block. Do NOT continue the current thread. Start fresh from a new direction.`;
   }
@@ -51,6 +67,7 @@ function buildSystemPrompt(
   return systemPrompt;
 }
 
+// talk to ai and get answers
 export async function streamChat({
   messages,
   persona,
@@ -59,26 +76,29 @@ export async function streamChat({
   onError,
   flags,
 }: {
-  messages: Msg[];
-  persona: string;
-  onDelta: (text: string) => void;
-  onDone: () => void;
-  onError: (err: string) => void;
-  flags?: { dontRepeat?: boolean; redirect?: boolean };
+  messages: Msg[];                          // all chat messages
+  persona: string;                          // which character to use
+  onDelta: (text: string) => void;          // when new text arrives
+  onDone: () => void;                       // when ai finishes talking
+  onError: (err: string) => void;           // when something breaks
+  flags?: { dontRepeat?: boolean; redirect?: boolean }; // user controls
 }) {
+  // check if secret key exists
   if (!config.API_KEY) {
     onError("API key not configured. Please set VITE_ANTHROPIC_API_KEY in your .env file.");
     return;
   }
 
+  // build instructions for ai
   const systemPrompt = buildSystemPrompt(persona, messages, flags);
 
   try {
-    // Build headers based on provider
+    // prepare headers for api call
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
 
+    // set different headers for each service
     if (config.IS_OPENROUTER) {
       headers["Authorization"] = `Bearer ${config.API_KEY}`;
       headers["HTTP-Referer"] = window.location.origin;
@@ -88,9 +108,10 @@ export async function streamChat({
       headers["anthropic-version"] = "2023-06-01";
     }
 
-    // Build request body based on provider
+    // prepare message package for ai
     const requestBody = config.IS_OPENROUTER
       ? {
+          // openrouter format
           model: config.MODEL_NAME,
           max_tokens: config.MAX_TOKENS,
           stream: true,
@@ -100,6 +121,7 @@ export async function streamChat({
           ],
         }
       : {
+          // anthropic format
           model: config.MODEL_NAME,
           max_tokens: config.MAX_TOKENS,
           system: systemPrompt,

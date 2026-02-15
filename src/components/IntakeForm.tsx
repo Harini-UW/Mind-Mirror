@@ -1,30 +1,40 @@
+// bring in state tracking tools
 import { useState } from "react";
+// bring in button component
 import { Button } from "@/components/ui/button";
 
+// what this form needs to work
 interface IntakeFormProps {
-  onSubmit: (intakeData: string) => void;
-  personaColor: string;
+  onSubmit: (intakeData: string) => void; // what to do when submitted
+  personaColor: string;                    // what color to use
 }
 
+// form that asks about writing project
 const IntakeForm = ({ onSubmit, personaColor }: IntakeFormProps) => {
+  // track what user types in fields
   const [textType, setTextType] = useState("");
   const [topicGenre, setTopicGenre] = useState("");
   const [progress, setProgress] = useState("");
   const [lastWritten, setLastWritten] = useState("");
 
+  // when user clicks start conversation
   const handleSubmit = () => {
+    // check all fields have something
     if (!textType.trim() || !topicGenre.trim() || !progress.trim() || !lastWritten.trim()) {
-      return; // All fields required
+      return; // stop if any empty
     }
 
+    // combine all answers into one message
     const intakeMessage = `Type: ${textType.trim()}
 Topic/Genre: ${topicGenre.trim()}
 Progress: ${progress.trim()}
 Last Written: ${lastWritten.trim()}`;
 
+    // send combined message to chat
     onSubmit(intakeMessage);
   };
 
+  // check if all four fields filled
   const allFieldsFilled = textType.trim() && topicGenre.trim() && progress.trim() && lastWritten.trim();
 
   return (

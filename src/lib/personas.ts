@@ -1,25 +1,33 @@
+// bring in pictures for sage character
 import sageAvatar from "@/assets/sage.jpg";
+// bring in pictures for manager character
 import rationalAvatar from "@/assets/challenger.png";
+// bring in pictures for detective character
 import detectiveAvatar from "@/assets/shadow.jpg";
+// bring in background pictures for each
 import bgSage from "@/assets/bg-sage.jpg";
 import bgRational from "@/assets/bg-challenger.jpg";
 import bgDetective from "@/assets/bg-shadow.jpg";
 
+// three types of helpful characters
 export type PersonaId = "sage" | "rational" | "detective";
 
+// what info each character needs
 export interface Persona {
-  id: PersonaId;
-  name: string;
-  title: string;
-  description: string;
-  avatar: string;
-  background: string;
-  colorClass: string;
-  borderColor: string;
-  systemPrompt: string;
+  id: PersonaId;           // character short name
+  name: string;            // character display name
+  title: string;           // character personality type
+  description: string;     // what character does
+  avatar: string;          // character face picture
+  background: string;      // character background picture
+  colorClass: string;      // character theme color
+  borderColor: string;     // character border color
+  systemPrompt: string;    // instructions for ai brain
 }
 
+// all three characters with their details
 export const personas: Record<PersonaId, Persona> = {
+  // first character: the sage
   sage: {
     id: "sage",
     name: "The Sage",
@@ -29,6 +37,7 @@ export const personas: Record<PersonaId, Persona> = {
     background: bgSage,
     colorClass: "text-sage",
     borderColor: "border-sage",
+    // instructions telling ai how to act
     systemPrompt: `You are The Sage — a calm, reflective guide who helps writers think deeper about their writing through thoughtful questioning.
 
 ABSOLUTE RULES:
@@ -85,6 +94,7 @@ FORMATTING:
 - One clear, focused question per response
 - Conversational but professional tone`,
   },
+  // second character: the manager
   rational: {
     id: "rational",
     name: "The Manager",
@@ -94,6 +104,7 @@ FORMATTING:
     background: bgRational,
     colorClass: "text-rational",
     borderColor: "border-rational",
+    // instructions telling ai how to act
     systemPrompt: `You are the The Manager — a direct, efficient guide who helps writers think deeper about their writing through precise questioning.
 
 ABSOLUTE RULES:
@@ -150,6 +161,7 @@ FORMATTING:
 - One clear, focused question per response
 - Conversational but professional tone`,
   },
+  // third character: the detective
   detective: {
     id: "detective",
     name: "The Detective",
@@ -159,6 +171,7 @@ FORMATTING:
     background: bgDetective,
     colorClass: "text-detective",
     borderColor: "border-detective",
+    // instructions telling ai how to act
     systemPrompt: `You are The Detective — a curious, investigative guide who helps writers think deeper about their writing through exploratory questioning.
 
 ABSOLUTE RULES:
@@ -217,4 +230,5 @@ FORMATTING:
   },
 };
 
+// make list of all three characters
 export const personaList = Object.values(personas);

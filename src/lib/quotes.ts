@@ -1,3 +1,4 @@
+// list of cheerful messages duck shows
 export const duckQuotes = [
   "Hold on. You're 6-7 prompts away!",
   "Do it for the plot.",
