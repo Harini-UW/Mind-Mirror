@@ -1,42 +1,55 @@
+/* bring in retro game fonts from google */
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap');
 
+/* bring in tailwind style system */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* define all color variables for website */
 @layer base {
   :root {
+    /* main background and text colors */
     --background: 35 40% 88%;
     --foreground: 25 30% 18%;
 
+    /* card colors for boxes */
     --card: 40 45% 92%;
     --card-foreground: 25 30% 18%;
 
+    /* popup colors */
     --popover: 40 45% 92%;
     --popover-foreground: 25 30% 18%;
 
+    /* main accent color used throughout */
     --primary: 15 70% 45%;
     --primary-foreground: 40 50% 95%;
 
+    /* secondary colors for backgrounds */
     --secondary: 35 35% 82%;
     --secondary-foreground: 25 30% 18%;
 
+    /* muted colors for less important text */
     --muted: 35 30% 80%;
     --muted-foreground: 25 15% 45%;
 
+    /* accent colors for highlights */
     --accent: 200 50% 45%;
     --accent-foreground: 40 50% 95%;
 
+    /* error and warning colors */
     --destructive: 0 65% 50%;
     --destructive-foreground: 40 50% 95%;
 
+    /* border and input colors */
     --border: 25 25% 35%;
     --input: 35 30% 80%;
     --ring: 15 70% 45%;
 
+    /* no rounded corners keep it pixelated */
     --radius: 0px;
 
-    /* Persona palettes */
+    /* colors for each character */
     --sage: 200 55% 45%;
     --sage-glow: 45 80% 55%;
     --rational: 10 75% 48%;
@@ -44,6 +57,7 @@
     --detective: 270 45% 42%;
     --detective-glow: 175 50% 45%;
 
+    /* sidebar colors not used currently */
     --sidebar-background: 35 35% 85%;
     --sidebar-foreground: 25 30% 18%;
     --sidebar-primary: 15 70% 45%;
@@ -55,11 +69,14 @@
   }
 }
 
+/* set default styles for whole website */
 @layer base {
+  /* make all borders use border color */
   * {
     @apply border-border;
   }
 
+  /* set body background and default font */
   body {
     @apply bg-background text-foreground;
     font-family: 'VT323', monospace;
@@ -67,26 +84,32 @@
     image-rendering: auto;
   }
 
+  /* make all headings use pixel font */
   h1, h2, h3, h4, h5, h6 {
     font-family: 'Press Start 2P', cursive;
   }
 }
 
+/* custom style classes you can use */
 @layer utilities {
+  /* thick border with shadow for retro look */
   .pixel-border {
     border: 3px solid hsl(var(--border));
-    box-shadow: 
+    box-shadow:
       3px 3px 0 0 hsl(var(--border));
   }
 
+  /* shadow effect for floating elements */
   .pixel-shadow {
     box-shadow: 4px 4px 0 0 hsl(25 25% 35% / 0.3);
   }
 
+  /* pixel art heading font */
   .font-pixel {
     font-family: 'Press Start 2P', cursive;
   }
 
+  /* retro monospace body font */
   .font-retro {
     font-family: 'VT323', monospace;
   }
